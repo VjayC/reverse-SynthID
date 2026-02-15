@@ -374,8 +374,6 @@ result = remover.remove(image, mode='balanced')
 
 - [SynthID: Identifying AI-generated images](https://deepmind.google/technologies/synthid/)
 - [SynthID Paper (arXiv:2510.09263)](https://arxiv.org/abs/2510.09263)
-- [Synthid-Bypass ComfyUI Workflow](https://github.com/aloshdenny/Synthid-Bypass) - img2img re-generation approach
-
 ---
 
 ## ⚠️ Disclaimer
@@ -387,15 +385,3 @@ This project is for **research and educational purposes only**. SynthID is propr
 - 📡 Understanding spread-spectrum encoding methods
 
 **Do not use these tools to misrepresent AI-generated content as human-created.**
-
----
-
-## 📄 License
-
-Research and educational use only. See [LICENSE](LICENSE) for details.
-
----
-
-<p align="center">
-  Made with 🔬 by watermark reverse engineering researchers
-</p>
