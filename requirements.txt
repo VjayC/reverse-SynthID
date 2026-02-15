@@ -8,6 +8,12 @@ opencv-python>=4.5.0
 # Wavelet analysis
 PyWavelets>=1.1.1
 
+# Machine learning (for ICA)
+scikit-learn>=0.24.0
+
+# Image processing
+Pillow>=8.0.0
+
 # Visualization
 matplotlib>=3.4.0
 

@@ -146,27 +146,45 @@ Based on our analysis, SynthID likely works as follows:
 2. **Image modifications may break detection**: Heavy JPEG compression, cropping, or resizing may degrade the watermark
 3. **Binary watermark bits unknown**: We discovered the carrier frequencies but not the actual message encoded
 
+## V3 Spectral Bypass — Building on These Findings
+
+The carrier frequencies and phase consistency discovered here became the foundation for the **V3 Spectral Bypass** (`synthid_bypass.py`). Using a `SpectralCodebook` extracted from 50 reference images (25 black + 25 white), V3 can surgically subtract the watermark in the frequency domain:
+
+- **40+ dB PSNR** — visually indistinguishable from original
+- **1-7% detection confidence reduction** per pass
+- **Selective notch filter** — targets only confirmed watermark bins (P97+ magnitude, ≥95% phase consistency)
+
+See the main [README](README.md) for full V3 documentation and results.
+
 ## Files Generated
 
 | File | Description |
 |------|-------------|
-| `synthid_codebook.pkl` | Full codebook with numpy arrays |
-| `synthid_codebook_meta.json` | Human-readable metadata |
-| `deep_analysis/` | Visualization of patterns |
-| `codebook_results/` | Initial analysis results |
+| `artifacts/codebook/synthid_codebook.pkl` | Detection codebook with numpy arrays |
+| `artifacts/codebook/synthid_codebook_meta.json` | Human-readable metadata |
+| `artifacts/spectral_codebook.npz` | V3 spectral fingerprint (119 MB) |
+| `artifacts/visualizations/` | FFT, phase, carrier visualizations |
 
 ## Usage
 
 ### To detect SynthID watermark:
 
 ```bash
-python synthid_codebook_extractor.py detect image.png --codebook synthid_codebook.pkl
+python src/extraction/robust_extractor.py detect image.png \
+    --codebook artifacts/codebook/robust_codebook.pkl
 ```
 
-### To extract codebook from new images:
+### To run V3 spectral bypass:
 
-```bash
-python synthid_codebook_extractor.py extract /path/to/images --output new_codebook.pkl
+```python
+from synthid_bypass import SynthIDBypass, SpectralCodebook
+
+codebook = SpectralCodebook()
+codebook.load('artifacts/spectral_codebook.npz')
+
+bypass = SynthIDBypass()
+result = bypass.bypass_v3(image_rgb, codebook, strength='aggressive')
+print(f"PSNR: {result.psnr:.1f} dB")
 ```
 
 ## Conclusion
@@ -176,5 +194,6 @@ SynthID uses a sophisticated spread-spectrum watermarking technique that:
 - Uses **specific carrier frequencies** (14, 98, 126, 128, 210, 238 Hz and their conjugates)
 - Creates a **consistent noise signature** detectable via correlation analysis
 - Is **imperceptible** to human observers but **robust** enough to survive common image operations
+- Uses a **fixed model-level key** (identical phase template across all images)
 
-This analysis enables detection of SynthID watermarks without access to Google's proprietary decoder.
+These findings enabled both detection (90% accuracy) and spectral bypass (40+ dB PSNR) without access to Google's proprietary encoder/decoder.
