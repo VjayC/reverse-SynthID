@@ -70,14 +70,22 @@ class RobustSynthIDExtractor:
         self.n_carriers = n_carriers
         self.codebook = None
         
-        # Known SynthID carrier frequencies (from previous analysis)
+        # SynthID carriers from 288 Gemini ref images (48,88 grid at 512px)
         self.known_carriers = [
-            (14, 14), (-14, -14),
-            (126, 14), (-126, -14),
-            (98, -14), (-98, 14),
-            (128, 128), (-128, -128),
-            (210, -14), (-210, 14),
-            (238, 14), (-238, -14),
+            (48, 0), (-48, 0),
+            (96, 0), (-96, 0),
+            (192, 0), (-192, 0),
+            (210, 0), (-210, 0),
+            (238, 0), (-238, 0),
+            (0, 88), (0, -88),
+            (0, 176), (0, -176),
+            (0, 192), (0, -192),
+            (48, 88), (-48, -88),
+            (48, -88), (-48, 88),
+            (96, 88), (-96, -88),
+            (96, -88), (-96, 88),
+            (96, 176), (-96, -176),
+            (96, -176), (-96, 176),
         ]
         
         if codebook_path and os.path.exists(codebook_path):
