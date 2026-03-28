@@ -24,7 +24,6 @@ from scipy.fft import fft2, ifft2, fftshift, ifftshift
 from scipy import ndimage
 from typing import Optional, Dict, List, Tuple
 from dataclasses import dataclass
-import pywt
 from PIL import Image
 
 
@@ -1558,6 +1557,39 @@ class SpectralCodebook:
         self.n_black_refs = 0
         self.n_white_refs = 0
     
+    @staticmethod
+    def _list_reference_images(
+        directory: str,
+        max_images: int = None,
+    ) -> list:
+        """
+        Collect .png/.jpg/.jpeg/.webp in a directory, excluding common unwatermarked
+        baseline filenames (e.g. black.jpg, white.png) when folders also hold those.
+        """
+        import glob
+        
+        excl = {
+            'black.jpg', 'black.jpeg', 'black.png',
+            'white.jpg', 'white.jpeg', 'white.png',
+        }
+        paths = []
+        for ext in ('*.png', '*.jpg', '*.jpeg', '*.webp'):
+            paths.extend(glob.glob(os.path.join(directory, ext)))
+            paths.extend(glob.glob(os.path.join(directory, ext.upper())))
+        # Dedupe while preserving sort order
+        seen = set()
+        out = []
+        for p in sorted(paths):
+            base = os.path.basename(p).lower()
+            if base in excl:
+                continue
+            if p not in seen:
+                seen.add(p)
+                out.append(p)
+        if max_images:
+            out = out[:max_images]
+        return out
+    
     def extract_from_references(self, black_dir: str, white_dir: str = None, 
                                  max_images: int = None):
         """
@@ -1567,19 +1599,21 @@ class SpectralCodebook:
         For white images: watermark = 255 - pixel values (deviations from 255).
         
         Args:
-            black_dir: Directory of pure-black Gemini PNG images
-            white_dir: Optional directory of pure-white Gemini PNG images
+            black_dir: Directory of pure-black SynthID-watermarked images (.png/.jpg/.webp)
+            white_dir: Optional directory of pure-white watermarked images
             max_images: Max images to use per color (None = all)
-        """
-        import glob
         
+        Files named black.jpg / white.png (etc.) are skipped so unwatermarked baselines
+        in the same folder are not averaged with watermarked outputs.
+        """
         # --- Black images ---
-        black_files = sorted(glob.glob(os.path.join(black_dir, '*.png')))
-        if max_images:
-            black_files = black_files[:max_images]
+        black_files = self._list_reference_images(black_dir, max_images=max_images)
         
         if not black_files:
-            raise ValueError(f"No PNG files found in {black_dir}")
+            raise ValueError(
+                f"No image files (.png/.jpg/.jpeg/.webp) found in {black_dir} "
+                f"(after excluding black.* / white.* baselines)"
+            )
         
         print(f"Extracting spectral envelope from {len(black_files)} black images...")
         
@@ -1650,9 +1684,7 @@ class SpectralCodebook:
         
         # --- White images (optional) ---
         if white_dir:
-            white_files = sorted(glob.glob(os.path.join(white_dir, '*.png')))
-            if max_images:
-                white_files = white_files[:max_images]
+            white_files = self._list_reference_images(white_dir, max_images=max_images)
             
             if white_files:
                 print(f"\nExtracting from {len(white_files)} white images...")

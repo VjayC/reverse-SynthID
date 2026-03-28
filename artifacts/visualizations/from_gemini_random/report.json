@@ -1,0 +1,571 @@
+{
+  "n_images": 88,
+  "noise": {
+    "mean_correlation": 0.0026255021803081036,
+    "max_correlation": 0.7905227541923523,
+    "avg_std": 0.009135379455983639
+  },
+  "frequency": {
+    "overall_phase_coherence": 0.10221139341592789,
+    "top_carriers": [
+      {
+        "position": [
+          256,
+          256
+        ],
+        "frequency": [
+          0,
+          0
+        ],
+        "magnitude": 27891198.0,
+        "coherence": 1.0,
+        "combined_score": 17.143821716308594
+      },
+      {
+        "position": [
+          255,
+          256
+        ],
+        "frequency": [
+          -1,
+          0
+        ],
+        "magnitude": 3603189.5,
+        "coherence": 0.8163063526153564,
+        "combined_score": 12.32404613494873
+      },
+      {
+        "position": [
+          257,
+          256
+        ],
+        "frequency": [
+          1,
+          0
+        ],
+        "magnitude": 3603189.5,
+        "coherence": 0.8163063526153564,
+        "combined_score": 12.32404613494873
+      },
+      {
+        "position": [
+          256,
+          255
+        ],
+        "frequency": [
+          0,
+          -1
+        ],
+        "magnitude": 3387103.75,
+        "coherence": 0.7231201529502869,
+        "combined_score": 10.87246322631836
+      },
+      {
+        "position": [
+          256,
+          257
+        ],
+        "frequency": [
+          0,
+          1
+        ],
+        "magnitude": 3387103.75,
+        "coherence": 0.7231201529502869,
+        "combined_score": 10.87246322631836
+      },
+      {
+        "position": [
+          208,
+          344
+        ],
+        "frequency": [
+          -48,
+          88
+        ],
+        "magnitude": 35576.125,
+        "coherence": 0.8377835750579834,
+        "combined_score": 8.779518127441406
+      },
+      {
+        "position": [
+          304,
+          168
+        ],
+        "frequency": [
+          48,
+          -88
+        ],
+        "magnitude": 35576.125,
+        "coherence": 0.8377835750579834,
+        "combined_score": 8.779518127441406
+      },
+      {
+        "position": [
+          254,
+          256
+        ],
+        "frequency": [
+          -2,
+          0
+        ],
+        "magnitude": 1486295.0,
+        "coherence": 0.604218065738678,
+        "combined_score": 8.587024688720703
+      },
+      {
+        "position": [
+          258,
+          256
+        ],
+        "frequency": [
+          2,
+          0
+        ],
+        "magnitude": 1486295.0,
+        "coherence": 0.604218065738678,
+        "combined_score": 8.587024688720703
+      },
+      {
+        "position": [
+          64,
+          256
+        ],
+        "frequency": [
+          -192,
+          0
+        ],
+        "magnitude": 23282.326171875,
+        "coherence": 0.829474687576294,
+        "combined_score": 8.340776443481445
+      },
+      {
+        "position": [
+          448,
+          256
+        ],
+        "frequency": [
+          192,
+          0
+        ],
+        "magnitude": 23282.326171875,
+        "coherence": 0.829474687576294,
+        "combined_score": 8.340776443481445
+      },
+      {
+        "position": [
+          208,
+          168
+        ],
+        "frequency": [
+          -48,
+          -88
+        ],
+        "magnitude": 33208.3046875,
+        "coherence": 0.775635302066803,
+        "combined_score": 8.074817657470703
+      },
+      {
+        "position": [
+          304,
+          344
+        ],
+        "frequency": [
+          48,
+          88
+        ],
+        "magnitude": 33208.3046875,
+        "coherence": 0.775635302066803,
+        "combined_score": 8.074817657470703
+      },
+      {
+        "position": [
+          46,
+          256
+        ],
+        "frequency": [
+          -210,
+          0
+        ],
+        "magnitude": 20412.423828125,
+        "coherence": 0.8131496906280518,
+        "combined_score": 8.069655418395996
+      },
+      {
+        "position": [
+          466,
+          256
+        ],
+        "frequency": [
+          210,
+          0
+        ],
+        "magnitude": 20412.423828125,
+        "coherence": 0.8131496906280518,
+        "combined_score": 8.069655418395996
+      },
+      {
+        "position": [
+          160,
+          256
+        ],
+        "frequency": [
+          -96,
+          0
+        ],
+        "magnitude": 49148.40234375,
+        "coherence": 0.739071249961853,
+        "combined_score": 7.983905792236328
+      },
+      {
+        "position": [
+          352,
+          256
+        ],
+        "frequency": [
+          96,
+          0
+        ],
+        "magnitude": 49148.40234375,
+        "coherence": 0.739071249961853,
+        "combined_score": 7.983905792236328
+      },
+      {
+        "position": [
+          252,
+          256
+        ],
+        "frequency": [
+          -4,
+          0
+        ],
+        "magnitude": 790061.8125,
+        "coherence": 0.5862882137298584,
+        "combined_score": 7.961716175079346
+      },
+      {
+        "position": [
+          260,
+          256
+        ],
+        "frequency": [
+          4,
+          0
+        ],
+        "magnitude": 790061.8125,
+        "coherence": 0.5862882137298584,
+        "combined_score": 7.961716175079346
+      },
+      {
+        "position": [
+          18,
+          256
+        ],
+        "frequency": [
+          -238,
+          0
+        ],
+        "magnitude": 19611.361328125,
+        "coherence": 0.8038652539253235,
+        "combined_score": 7.945335865020752
+      }
+    ]
+  },
+  "bit_planes": {
+    "0": {
+      "mean_consistency": 0.08478139340877533,
+      "high_consistency_ratio": 0.0,
+      "entropy": 4.276840129984718
+    },
+    "1": {
+      "mean_consistency": 0.08489435166120529,
+      "high_consistency_ratio": 0.0,
+      "entropy": 4.277498640191018
+    },
+    "2": {
+      "mean_consistency": 0.08504554629325867,
+      "high_consistency_ratio": 0.0,
+      "entropy": 4.277922445666714
+    },
+    "3": {
+      "mean_consistency": 0.08617954701185226,
+      "high_consistency_ratio": 0.0,
+      "entropy": 4.296973619811812
+    },
+    "4": {
+      "mean_consistency": 0.09815216809511185,
+      "high_consistency_ratio": 0.0,
+      "entropy": 4.396063772756372
+    },
+    "5": {
+      "mean_consistency": 0.13747233152389526,
+      "high_consistency_ratio": 0.0,
+      "entropy": 4.541127948532454
+    },
+    "6": {
+      "mean_consistency": 0.26652395725250244,
+      "high_consistency_ratio": 0.0,
+      "entropy": 4.586399223468949
+    },
+    "7": {
+      "mean_consistency": 0.2957964837551117,
+      "high_consistency_ratio": 0.000843048095703125,
+      "entropy": 4.749796416349521
+    }
+  },
+  "lsb": {
+    "R": {
+      "mean_consistency": 0.08503350344571199,
+      "consistent_ratio": 0.003711700439453125
+    },
+    "G": {
+      "mean_consistency": 0.08481433174826881,
+      "consistent_ratio": 0.0037689208984375
+    },
+    "B": {
+      "mean_consistency": 0.08481701937588777,
+      "consistent_ratio": 0.003795623779296875
+    }
+  },
+  "watermark_spectrum_peaks": [
+    {
+      "position": [
+        256,
+        168
+      ],
+      "frequency": [
+        0,
+        -88
+      ],
+      "magnitude": 5.904152870178223,
+      "phase": 0.26778438687324524
+    },
+    {
+      "position": [
+        256,
+        344
+      ],
+      "frequency": [
+        0,
+        88
+      ],
+      "magnitude": 5.904152870178223,
+      "phase": -0.26778438687324524
+    },
+    {
+      "position": [
+        160,
+        256
+      ],
+      "frequency": [
+        -96,
+        0
+      ],
+      "magnitude": 5.29414176940918,
+      "phase": 2.2876338958740234
+    },
+    {
+      "position": [
+        352,
+        256
+      ],
+      "frequency": [
+        96,
+        0
+      ],
+      "magnitude": 5.29414176940918,
+      "phase": -2.2876338958740234
+    },
+    {
+      "position": [
+        208,
+        344
+      ],
+      "frequency": [
+        -48,
+        88
+      ],
+      "magnitude": 5.22776460647583,
+      "phase": 0.22210296988487244
+    },
+    {
+      "position": [
+        304,
+        168
+      ],
+      "frequency": [
+        48,
+        -88
+      ],
+      "magnitude": 5.22776460647583,
+      "phase": -0.22210296988487244
+    },
+    {
+      "position": [
+        208,
+        168
+      ],
+      "frequency": [
+        -48,
+        -88
+      ],
+      "magnitude": 5.153881072998047,
+      "phase": -2.5221827030181885
+    },
+    {
+      "position": [
+        304,
+        344
+      ],
+      "frequency": [
+        48,
+        88
+      ],
+      "magnitude": 5.153881072998047,
+      "phase": 2.5221827030181885
+    },
+    {
+      "position": [
+        256,
+        80
+      ],
+      "frequency": [
+        0,
+        -176
+      ],
+      "magnitude": 4.930533409118652,
+      "phase": -0.16202668845653534
+    },
+    {
+      "position": [
+        256,
+        432
+      ],
+      "frequency": [
+        0,
+        176
+      ],
+      "magnitude": 4.930533409118652,
+      "phase": 0.16202668845653534
+    },
+    {
+      "position": [
+        208,
+        256
+      ],
+      "frequency": [
+        -48,
+        0
+      ],
+      "magnitude": 4.8365912437438965,
+      "phase": 1.1018832921981812
+    },
+    {
+      "position": [
+        304,
+        256
+      ],
+      "frequency": [
+        48,
+        0
+      ],
+      "magnitude": 4.8365912437438965,
+      "phase": -1.1018832921981812
+    },
+    {
+      "position": [
+        160,
+        168
+      ],
+      "frequency": [
+        -96,
+        -88
+      ],
+      "magnitude": 4.823460102081299,
+      "phase": 1.7629518508911133
+    },
+    {
+      "position": [
+        352,
+        344
+      ],
+      "frequency": [
+        96,
+        88
+      ],
+      "magnitude": 4.823460102081299,
+      "phase": -1.7629518508911133
+    },
+    {
+      "position": [
+        256,
+        64
+      ],
+      "frequency": [
+        0,
+        -192
+      ],
+      "magnitude": 4.730844974517822,
+      "phase": 1.1893998384475708
+    },
+    {
+      "position": [
+        256,
+        448
+      ],
+      "frequency": [
+        0,
+        192
+      ],
+      "magnitude": 4.730844974517822,
+      "phase": -1.1893998384475708
+    },
+    {
+      "position": [
+        64,
+        256
+      ],
+      "frequency": [
+        -192,
+        0
+      ],
+      "magnitude": 4.723679542541504,
+      "phase": -0.8789771199226379
+    },
+    {
+      "position": [
+        448,
+        256
+      ],
+      "frequency": [
+        192,
+        0
+      ],
+      "magnitude": 4.723679542541504,
+      "phase": 0.8789771199226379
+    },
+    {
+      "position": [
+        160,
+        80
+      ],
+      "frequency": [
+        -96,
+        -176
+      ],
+      "magnitude": 4.679676055908203,
+      "phase": -1.9577183723449707
+    },
+    {
+      "position": [
+        352,
+        432
+      ],
+      "frequency": [
+        96,
+        176
+      ],
+      "magnitude": 4.679676055908203,
+      "phase": 1.9577183723449707
+    }
+  ]
+}
