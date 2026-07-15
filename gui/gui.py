@@ -16,6 +16,7 @@ from pathlib import Path
 REPO_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_DIR / "src" / "extraction"))
 
+import cv2
 import numpy as np
 import tkinter as tk
 from tkinter import filedialog, ttk
@@ -28,10 +29,12 @@ except ImportError:
 
 from PIL import Image
 from synthid_bypass import SynthIDBypass, SpectralCodebook
+from synthid_bypass_v4 import SpectralCodebookV4
 from robust_extractor import RobustSynthIDExtractor
 
 CODEBOOK_PATH = REPO_DIR / "artifacts" / "spectral_codebook_v3.npz"
 DETECTOR_CODEBOOK_PATH = REPO_DIR / "artifacts" / "codebook" / "robust_codebook.pkl"
+V4_CODEBOOK_PATH = REPO_DIR / "artifacts" / "spectral_codebook_v4.npz"
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".webp"}
 
 
@@ -40,6 +43,73 @@ def copy_pixels(src_path: str, dst_path: str):
     im = Image.open(src_path)
     arr = np.array(im)
     Image.fromarray(arr, mode=im.mode).save(dst_path)
+
+
+def find_exact_v4_profile(h: int, w: int, v4_codebook: SpectralCodebookV4,
+                           tolerance: float = 0.003):
+    """Find a V4 codebook profile that (h, w) is a clean scaled and/or
+    90-degree-rotated version of, based on a strict aspect-ratio match.
+
+    Real Gemini downloads that don't exactly match one of the codebook's 14
+    captured resolutions are typically a clean integer up-scale of one of
+    them (e.g. exactly 2.000x in both dimensions after accounting for a
+    90-degree rotation) — some delivery paths export at a higher resolution
+    than the one the reference set was built from. An unrelated image that
+    merely has a similar aspect ratio by coincidence will not hit this tight
+    a tolerance (empirically: genuine matches land at ~0.00% deviation,
+    coincidental ones at 1.5%+), so this is deliberately strict rather than
+    "closest available profile" — a loose match is worse than no match, since
+    resizing to fit a wrong profile is what produces false positives.
+
+    Returns (target_h, target_w, needs_rotation) for the tightest match
+    within tolerance, or None if nothing matches closely enough to trust.
+    """
+    img_ar = h / w
+    seen_resolutions = set()
+    best = None
+    for (_, ph, pw) in v4_codebook.profiles:
+        if (ph, pw) in seen_resolutions:
+            continue
+        seen_resolutions.add((ph, pw))
+        profile_ar = ph / pw
+        # Rotating the image 90 degrees swaps its H/W, so its aspect ratio
+        # becomes 1/img_ar; the resize target is always the profile's own
+        # (ph, pw) either way, only the orientation to compare against differs.
+        for rotate, candidate_ar in [(False, profile_ar), (True, pw / ph)]:
+            diff = abs(img_ar - candidate_ar) / candidate_ar
+            if best is None or diff < best[0]:
+                best = (diff, ph, pw, rotate)
+    if best is not None and best[0] <= tolerance:
+        return best[1], best[2], best[3]
+    return None
+
+
+def detect_watermark(path: str, detector: RobustSynthIDExtractor,
+                      v4_codebook: SpectralCodebookV4):
+    """Check for a SynthID watermark, combining the V3 detector (works at
+    any resolution but loses some signal to its fixed 512x512 stretch) with
+    the V4 detector (native-resolution, much more sensitive, but only valid
+    at an exact profile match) when a trustworthy V4 match exists. Returns
+    the more confident of the two.
+    """
+    img_bgr = cv2.imread(path)
+    if img_bgr is None:
+        raise ValueError(f"Could not load: {path}")
+    img = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+    h, w = img.shape[:2]
+
+    candidates = [detector.detect_array(img)]
+
+    match = find_exact_v4_profile(h, w, v4_codebook)
+    if match is not None:
+        target_h, target_w, rotate = match
+        oriented = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE) if rotate else img
+        resized = cv2.resize(oriented, (target_w, target_h), interpolation=cv2.INTER_AREA)
+        for model in v4_codebook.models:
+            candidates.append(
+                detector.detect_from_v4_codebook(resized, v4_codebook, model=model))
+
+    return max(candidates, key=lambda r: r.confidence)
 
 
 def strip_metadata(path: str):
@@ -148,6 +218,8 @@ class App:
                 self.codebook.load(str(CODEBOOK_PATH))
                 self.detector = RobustSynthIDExtractor(
                     codebook_path=str(DETECTOR_CODEBOOK_PATH))
+                self.v4_codebook = SpectralCodebookV4()
+                self.v4_codebook.load(str(V4_CODEBOOK_PATH))
                 self.root.after(0, lambda: self.status.set(
                     "Ready. Drag images in or click the box above."))
             except Exception as e:
@@ -191,7 +263,7 @@ class App:
                 dst = out_dir / f"{src.stem}_clean{src.suffix}"
                 self.root.after(0, lambda s=src.name: self.status.set(f"Checking {s}…"))
                 try:
-                    det = self.detector.detect(str(src))
+                    det = detect_watermark(str(src), self.detector, self.v4_codebook)
                     if det.is_watermarked:
                         self.root.after(0, lambda s=src.name, c=det.confidence:
                                          self.status.set(f"Watermark found in {s} (conf {c:.2f}) — cleaning…"))
