@@ -5,12 +5,17 @@ A small drag-and-drop desktop app around this repo's V3 spectral bypass
 watermark left behind after using generative AI to restore old photographs.
 
 - Drop images in, get cleaned copies out — no command line needed after setup.
+- Runs `RobustSynthIDExtractor` on each image first. The spectral bypass only
+  runs if a watermark is actually detected; otherwise the image is passed
+  through untouched. (Blindly subtracting the codebook's carrier pattern from
+  an image that never had it would imprint a watermark-shaped artifact
+  instead of removing one — this is why detection gates the bypass.)
 - Optionally strips all EXIF/XMP/IPTC metadata from the output (including any
   AI-generation provenance tags such as C2PA content credentials or IPTC
   `DigitalSourceType`), by rebuilding the file from raw pixel data.
 - Runs fully offline. No network calls, no telemetry.
-- Uses V3 (pure signal processing — numpy/scipy/opencv only, no PyTorch
-  required, no GPU needed).
+- Uses V3 (pure signal processing — numpy/scipy/opencv/PyWavelets/
+  scikit-learn only, no PyTorch required, no GPU needed).
 
 ## Setup
 
@@ -35,7 +40,8 @@ The first double-click sets up the venv automatically if it doesn't exist yet.
 
 ## Notes
 
-- Reads the codebook from `../artifacts/spectral_codebook_v3.npz` (already in
-  this repo) — no extra downloads.
+- Reads the bypass codebook from `../artifacts/spectral_codebook_v3.npz` and
+  the detector codebook from `../artifacts/codebook/robust_codebook.pkl`
+  (both already in this repo) — no extra downloads.
 - Subject to this repo's [LICENSE](../LICENSE): non-commercial use, with
   required attribution to the original author.

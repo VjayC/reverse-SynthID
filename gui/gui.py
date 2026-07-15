@@ -28,9 +28,18 @@ except ImportError:
 
 from PIL import Image
 from synthid_bypass import SynthIDBypass, SpectralCodebook
+from robust_extractor import RobustSynthIDExtractor
 
 CODEBOOK_PATH = REPO_DIR / "artifacts" / "spectral_codebook_v3.npz"
+DETECTOR_CODEBOOK_PATH = REPO_DIR / "artifacts" / "codebook" / "robust_codebook.pkl"
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".webp"}
+
+
+def copy_pixels(src_path: str, dst_path: str):
+    """Re-save the image unchanged (no spectral subtraction applied)."""
+    im = Image.open(src_path)
+    arr = np.array(im)
+    Image.fromarray(arr, mode=im.mode).save(dst_path)
 
 
 def strip_metadata(path: str):
@@ -137,6 +146,8 @@ class App:
                 self.bypass = SynthIDBypass()
                 self.codebook = SpectralCodebook()
                 self.codebook.load(str(CODEBOOK_PATH))
+                self.detector = RobustSynthIDExtractor(
+                    codebook_path=str(DETECTOR_CODEBOOK_PATH))
                 self.root.after(0, lambda: self.status.set(
                     "Ready. Drag images in or click the box above."))
             except Exception as e:
@@ -174,15 +185,29 @@ class App:
         def work():
             done = 0
             errors = []
+            skipped = []
             for p in paths:
                 src = Path(p)
                 dst = out_dir / f"{src.stem}_clean{src.suffix}"
-                self.root.after(0, lambda s=src.name: self.status.set(f"Cleaning {s}…"))
+                self.root.after(0, lambda s=src.name: self.status.set(f"Checking {s}…"))
                 try:
-                    self.bypass.bypass_v3_file(
-                        str(src), str(dst), self.codebook,
-                        strength=strength, verify=False,
-                    )
+                    det = self.detector.detect(str(src))
+                    if det.is_watermarked:
+                        self.root.after(0, lambda s=src.name, c=det.confidence:
+                                         self.status.set(f"Watermark found in {s} (conf {c:.2f}) — cleaning…"))
+                        self.bypass.bypass_v3_file(
+                            str(src), str(dst), self.codebook,
+                            strength=strength, verify=False,
+                        )
+                        skipped.append(False)
+                    else:
+                        # No watermark detected: subtracting the codebook's carrier
+                        # pattern anyway would imprint it onto a clean image instead
+                        # of removing one, so just pass the image through untouched.
+                        self.root.after(0, lambda s=src.name:
+                                         self.status.set(f"No watermark in {s} — left untouched"))
+                        copy_pixels(str(src), str(dst))
+                        skipped.append(True)
                     if do_strip_meta:
                         strip_metadata(str(dst))
                 except Exception as e:
@@ -192,7 +217,11 @@ class App:
                 self.root.after(0, lambda d=done: self.progress.config(value=d))
 
             def finish():
-                msg = f"Done: {done - len(errors)}/{len(paths)} cleaned → {out_dir}"
+                n_ok = done - len(errors)
+                n_skipped = sum(skipped)
+                msg = f"Done: {n_ok}/{len(paths)} processed → {out_dir}"
+                if n_skipped:
+                    msg += f"\n({n_skipped} had no watermark and were left untouched)"
                 if errors:
                     msg += f"\n{len(errors)} failed: " + "; ".join(errors[:3])
                 self.status.set(msg)
