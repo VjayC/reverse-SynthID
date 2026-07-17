@@ -10,6 +10,8 @@
 
 Visit us on [PitchHut](https://www.pitchhut.com/project/reverse-synthid-engineering)
 
+> This fork adds a drag and drop desktop app for the V3 bypass, no command line needed after setup. See [gui/README.md](gui/README.md) for setup and usage.
+
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/License-Research-green?style=flat-square" alt="License">

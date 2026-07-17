@@ -1,0 +1,7 @@
+numpy
+scipy
+opencv-python-headless
+pillow
+tkinterdnd2
+PyWavelets
+scikit-learn
